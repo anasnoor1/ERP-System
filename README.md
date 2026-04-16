@@ -49,12 +49,6 @@ npm run dev
 
 Runs on http://localhost:5173
 
-### Default Admin Credentials
-
-```
-Email:    admin@erp.com
-Password: Admin@123
-```
 
 (Created automatically on first run via the seed script)
 
