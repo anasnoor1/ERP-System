@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { message } from 'antd';
 import api from '../services/api';
 
 export default function useCrud(endpoint) {
@@ -9,35 +8,49 @@ export default function useCrud(endpoint) {
 
   const fetchData = useCallback(async (params = {}) => {
     setLoading(true);
+    const page = params.page || pagination.current;
+    const limit = params.limit || pagination.pageSize;
     try {
-      const { data: res } = await api.get(endpoint, { params: { page: pagination.current, limit: pagination.pageSize, ...params } });
+      const { data: res } = await api.get(endpoint, { params: { page, limit, ...params } });
       setData(res.data);
-      setPagination(p => ({ ...p, total: res.total }));
-    } catch { message.error('Failed to load data'); }
-    finally { setLoading(false); }
+      setPagination(p => ({ ...p, total: res.total, current: page, pageSize: limit }));
+    } catch (error) {
+      console.error('Failed to load data', error);
+    } finally {
+      setLoading(false);
+    }
   }, [endpoint, pagination.current, pagination.pageSize]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const create = async (values) => {
-    await api.post(endpoint, values);
-    message.success('Created successfully');
-    fetchData();
+    try {
+      await api.post(endpoint, values);
+      fetchData();
+    } catch (error) {
+      console.error('Create failed', error);
+    }
   };
 
   const update = async (id, values) => {
-    await api.put(`${endpoint}/${id}`, values);
-    message.success('Updated successfully');
-    fetchData();
+    try {
+      await api.put(`${endpoint}/${id}`, values);
+      fetchData();
+    } catch (error) {
+      console.error('Update failed', error);
+    }
   };
 
   const remove = async (id) => {
-    await api.delete(`${endpoint}/${id}`);
-    message.success('Deleted successfully');
-    fetchData();
+    try {
+      await api.delete(`${endpoint}/${id}`);
+      fetchData();
+    } catch (error) {
+      console.error('Delete failed', error);
+    }
   };
 
-  const handleTableChange = (pag) => setPagination(p => ({ ...p, current: pag.current, pageSize: pag.pageSize }));
-
-  return { data, loading, pagination, fetchData, create, update, remove, handleTableChange };
+  return { data, loading, pagination, fetchData, create, update, remove };
 }

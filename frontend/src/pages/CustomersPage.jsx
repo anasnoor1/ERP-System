@@ -1,4 +1,3 @@
-import { Form, Input } from 'antd';
 import CrudPage from '../components/common/CrudPage';
 
 const columns = [
@@ -8,12 +7,24 @@ const columns = [
   { title: 'Company', dataIndex: 'company', key: 'company' },
 ];
 
-const formFields = (
+const formFields = ({ values, onChange }) => (
   <>
-    <Form.Item name="name" label="Name" rules={[{ required: true }]}><Input /></Form.Item>
-    <Form.Item name="email" label="Email" rules={[{ type: 'email' }]}><Input /></Form.Item>
-    <Form.Item name="phone" label="Phone"><Input /></Form.Item>
-    <Form.Item name="company" label="Company"><Input /></Form.Item>
+    <div className="col-md-6">
+      <label className="form-label">Name</label>
+      <input type="text" className="form-control" value={values.name || ''} onChange={onChange('name')} required />
+    </div>
+    <div className="col-md-6">
+      <label className="form-label">Email</label>
+      <input type="email" className="form-control" value={values.email || ''} onChange={onChange('email')} />
+    </div>
+    <div className="col-md-6">
+      <label className="form-label">Phone</label>
+      <input type="tel" className="form-control" value={values.phone || ''} onChange={onChange('phone')} />
+    </div>
+    <div className="col-md-6">
+      <label className="form-label">Company</label>
+      <input type="text" className="form-control" value={values.company || ''} onChange={onChange('company')} />
+    </div>
   </>
 );
 

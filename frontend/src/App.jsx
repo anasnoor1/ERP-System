@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Spin } from 'antd';
 import { useAuth } from './contexts/AuthContext';
 import AppLayout from './layouts/AppLayout';
 import LoginPage from './pages/LoginPage';
@@ -13,7 +12,11 @@ import EmployeesPage from './pages/EmployeesPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Spin size="large" /></div>;
+  if (loading) return (
+    <div className="spinner-center">
+      <div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div>
+    </div>
+  );
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
